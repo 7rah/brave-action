@@ -19,10 +19,16 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: Build
+      - name: build 
         run: |
           echo "Free space:"
           df -h
-      
-      - name: Setup tmate session
-        uses: mxschmitt/action-tmate@v3
+          
+          git clone https://github.com/brave/brave-browser.git
+          git clone --branch "v1.54.15" https://github.com/brave/brave-core.git brave-browser/src/brave
+          cd brave-browser/src/brave
+          npm install
+          sed -i 's/\'--with_tags\', \'--with_branch_heads\', \'--upstream\'/\'--with_tags\', \'--with_branch_heads\', \'--upstream\', \'--no-history\'/' build/commands/scripts/sync.js
+          npm run init
+          ./install-build-deps.sh --no-prompt
+          npm run build Release
