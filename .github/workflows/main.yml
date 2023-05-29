@@ -40,5 +40,5 @@ jobs:
           
           npm run init
           # ./install-build-deps.sh --no-prompt
-          sudo apt update && sudo apt install gperf pkg-config
+          sudo apt update && sudo apt install gperf pkg-config -y
           npm run build Release
