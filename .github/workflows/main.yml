@@ -25,7 +25,7 @@ jobs:
           df -h
           
           git clone https://github.com/brave/brave-browser.git
-          git clone --branch "v1.54.15" https://github.com/brave/brave-core.git brave-browser/src/brave
+          git clone --branch "v1.51.114" https://github.com/brave/brave-core.git brave-browser/src/brave
           cd brave-browser/src/brave
           npm install
           target_str="--with_tags', '--with_branch_heads', '--upstream'"
