@@ -28,7 +28,16 @@ jobs:
           git clone --branch "v1.54.15" https://github.com/brave/brave-core.git brave-browser/src/brave
           cd brave-browser/src/brave
           npm install
-          sed -i 's/\'--with_tags\', \'--with_branch_heads\', \'--upstream\'/\'--with_tags\', \'--with_branch_heads\', \'--upstream\', \'--no-history\'/' build/commands/scripts/sync.js
+          target_str="--with_tags', '--with_branch_heads', '--upstream'"
+          replacement_str="--with_tags', '--with_branch_heads', '--upstream', '--no-history'"
+
+          # 指定文件路径
+          file_path="./build/commands/scripts/sync.js"
+
+          # 替换文件内容
+          sed -i "s/${target_str}/${replacement_str}/g" "${file_path}"
+
+          
           npm run init
           ./install-build-deps.sh --no-prompt
           npm run build Release
