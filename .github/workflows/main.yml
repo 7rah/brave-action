@@ -6,7 +6,12 @@ jobs:
     name: Build my artifact
     runs-on: ubuntu-latest
     steps:
-      - name: Maximize build space
+      - name: Maximize build space 1
+        uses: rokibhasansagar/slimhub_actions@main
+        with:
+           retain: "nodejs_npm"
+
+      - name: Maximize build space 2
         uses: easimon/maximize-build-space@master
         with:
           root-reserve-mb: 4096
