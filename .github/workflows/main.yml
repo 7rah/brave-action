@@ -36,8 +36,15 @@ jobs:
           npm run init
           # ./install-build-deps.sh --no-prompt
           sudo apt update && sudo apt install gperf pkg-config -y
-          
-      - name: build 
+        
+      - name: restore cache
+        uses: actions/cache/restore@v3
+        id: cache
+        with:
+          path: brave-browser/src/out
+          key: 'ninja-cache'
+
+      - name: build
         run: |
           cd brave-browser/src/brave
           echo "brave_services_key = qjVKcxtUybh8WpKNoQ7EbgbkJTMu7omjDHKk=VrPApb8PwJyPE9eqchxedTsMEWg" > .npmrc
