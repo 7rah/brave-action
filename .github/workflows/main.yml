@@ -33,12 +33,11 @@ jobs:
           sed -i "s/${target_str}/${replacement_str}/g" "${file_path}"
 
           
-          npm run init
+          timeout 5 npm run init
           # ./install-build-deps.sh --no-prompt
           sudo apt update && sudo apt install gperf pkg-config -y
           
       - name: build 
-        timeout-minutes: 30
         run: |
           cd brave-browser/src/brave
           echo "brave_services_key = qjVKcxtUybh8WpKNoQ7EbgbkJTMu7omjDHKk=VrPApb8PwJyPE9eqchxedTsMEWg" > .npmrc
