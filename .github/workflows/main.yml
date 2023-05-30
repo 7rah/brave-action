@@ -68,12 +68,11 @@ jobs:
           sudo find brave-browser -exec touch -acm -t 197001010000.00 {} +
   
   
-      #- name: restore cache
-      #  uses: actions/cache/restore@v3
-      #  id: cache
-      #  with:
-      #    path: brave-browser/src/out
-      #    key: 'ninja-cache'
+      - name: restore cache
+        uses: actions/cache/restore@v3
+        with:
+          path: brave-browser/src/out
+          key: 'ninja-cache'
   
       - name: build
         run: |
