@@ -70,12 +70,12 @@ jobs:
       - name: build
         run: |
           cd brave-browser/src/brave
-          timeout 5h npm run build Release || echo
+          timeout 4h npm run build Release || echo
         
       - uses: actions/cache/save@v3
         with:
           path: brave-browser/src/out
-          key: 'ninja-cache-v1'
+          key: 'ninja-cache-v2'
 
 
   build-stage2:
@@ -149,7 +149,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: brave-browser/src/out
-          key: 'ninja-cache-v1'
+          key: 'ninja-cache-v2'
   
       - name: build
         run: |
