@@ -63,9 +63,9 @@ jobs:
           echo "sardine_client_secret = 7ca8433c-7e61-4e25-b76e-25aa2da68df1" >> .npmrc
           echo "brave_zero_ex_api_key = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> .npmrc
   
-      - name: build prepare
+      - name: modify files
         run: |
-          find brave-browser -exec touch -acm -t 197001010000.00 {} +
+          sudo find brave-browser -exec touch -acm -t 197001010000.00 {} +
   
   
       #- name: restore cache
