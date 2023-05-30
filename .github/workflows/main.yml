@@ -37,14 +37,8 @@ jobs:
           # ./install-build-deps.sh --no-prompt
           sudo apt update && sudo apt install gperf pkg-config -y
         
-      - name: restore cache
-        uses: actions/cache/restore@v3
-        id: cache
-        with:
-          path: brave-browser/src/out
-          key: 'ninja-cache'
 
-      - name: build
+      - name: build prepare
         run: |
           cd brave-browser/src/brave
           echo "brave_services_key = qjVKcxtUybh8WpKNoQ7EbgbkJTMu7omjDHKk=VrPApb8PwJyPE9eqchxedTsMEWg" > .npmrc
@@ -68,8 +62,23 @@ jobs:
           echo "sardine_client_id = 7ca8433c-7e61-4e25-b76e-25aa2da68df1" >> .npmrc
           echo "sardine_client_secret = 7ca8433c-7e61-4e25-b76e-25aa2da68df1" >> .npmrc
           echo "brave_zero_ex_api_key = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> .npmrc
-          
-          timeout 30m npm run build Release || echo
+  
+      - name: build prepare
+        run: |
+          find brave-browser -exec touch -acm -t 197001010000.00 {} +
+  
+  
+      #- name: restore cache
+      #  uses: actions/cache/restore@v3
+      #  id: cache
+      #  with:
+      #    path: brave-browser/src/out
+      #    key: 'ninja-cache'
+  
+      - name: build
+        run: |
+          cd brave-browser/src/brave
+          timeout 20m npm run build Release || echo
         
       - uses: actions/cache/save@v3
         with:
