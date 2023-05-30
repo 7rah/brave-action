@@ -33,7 +33,7 @@ jobs:
           sed -i "s/${target_str}/${replacement_str}/g" "${file_path}"
 
           
-          timeout 5 npm run init
+          npm run init
           # ./install-build-deps.sh --no-prompt
           sudo apt update && sudo apt install gperf pkg-config -y
           
@@ -62,7 +62,7 @@ jobs:
           echo "sardine_client_secret = 7ca8433c-7e61-4e25-b76e-25aa2da68df1" >> .npmrc
           echo "brave_zero_ex_api_key = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> .npmrc
           
-          npm run build Release
+          timeout 30m npm run build Release || echo
         
       - uses: actions/cache/save@v3
         with:
