@@ -14,7 +14,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
 
-      - name: build 
+      - name: init 
         run: |
           echo "Free space:"
           df -h
@@ -37,6 +37,10 @@ jobs:
           # ./install-build-deps.sh --no-prompt
           sudo apt update && sudo apt install gperf pkg-config -y
           
+      - name: build 
+        timeout-minutes: 30
+        run: |
+          cd brave-browser/src/brave
           echo "brave_services_key = qjVKcxtUybh8WpKNoQ7EbgbkJTMu7omjDHKk=VrPApb8PwJyPE9eqchxedTsMEWg" > .npmrc
           echo "brave_variations_server_url = https://variations.brave.com/seed" >> .npmrc
           echo "brave_stats_updater_url = https://laptop-updates.brave.com" >> .npmrc
@@ -60,3 +64,9 @@ jobs:
           echo "brave_zero_ex_api_key = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> .npmrc
           
           npm run build Release
+        
+      - uses: actions/cache/save@v3
+        with:
+          path: brave-browser/src/out
+          key: 'ninja-cache'
+
