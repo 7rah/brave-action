@@ -75,7 +75,7 @@ jobs:
       - uses: actions/cache/save@v3
         with:
           path: brave-browser/src/out
-          key: 'ninja-cache-v2'
+          key: 'ninja-cache-stage1'
 
 
   build-stage2:
@@ -149,7 +149,7 @@ jobs:
         uses: actions/cache/restore@v3
         with:
           path: brave-browser/src/out
-          key: 'ninja-cache-v2'
+          key: 'ninja-cache-stage1'
   
       - name: build
         run: |
@@ -239,6 +239,14 @@ jobs:
         run: |
           cd brave-browser/src/brave
           npm run build Release
+          find ../out
 
+      - uses: actions/cache/save@v3
+        with:
+          path: brave-browser/src/out
+          key: 'ninja-cache-stage3'
 
-
+      - uses: actions/upload-artifact@v3
+        with:
+          name: brave
+          path: brave-browser/src/out
