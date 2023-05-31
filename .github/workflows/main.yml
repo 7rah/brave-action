@@ -6,7 +6,7 @@ jobs:
     name: Build stage 1
     runs-on: ubuntu-latest
     steps:
-      - name: Maximize build space 1
+      - name: Maximize build space
         uses: rokibhasansagar/slimhub_actions@main
         with:
            retain: "nodejs_npm"
@@ -70,7 +70,7 @@ jobs:
       - name: build
         run: |
           cd brave-browser/src/brave
-          timeout 4h npm run build Release || echo
+          timeout 5h npm run build Release || echo
         
       - uses: actions/cache/save@v3
         with:
@@ -83,7 +83,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build-stage1
     steps:
-      - name: Maximize build space 1
+      - name: Maximize build space
         uses: rokibhasansagar/slimhub_actions@main
         with:
            retain: "nodejs_npm"
@@ -154,6 +154,91 @@ jobs:
       - name: build
         run: |
           cd brave-browser/src/brave
+          timeout 5h npm run build Release || echo
+
+      - uses: actions/cache/save@v3
+        with:
+          path: brave-browser/src/out
+          key: 'ninja-cache-stage2'
+
+
+  build-stage3:
+    name: Build stage 3
+    runs-on: ubuntu-latest
+    needs: build-stage2
+    steps:
+      - name: Maximize build space
+        uses: rokibhasansagar/slimhub_actions@main
+        with:
+           retain: "nodejs_npm"
+
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: init 
+        run: |
+          echo "Free space:"
+          df -h
+          
+          git clone https://github.com/brave/brave-browser.git
+          git clone --branch "v1.51.114" https://github.com/brave/brave-core.git brave-browser/src/brave
+          cd brave-browser/src/brave
+          npm install
+          target_str="--with_tags', '--with_branch_heads', '--upstream'"
+          replacement_str="--with_tags', '--with_branch_heads', '--upstream', '--no-history'"
+
+          # 指定文件路径
+          file_path="./build/commands/scripts/sync.js"
+
+          # 替换文件内容
+          sed -i "s/${target_str}/${replacement_str}/g" "${file_path}"
+
+          
+          npm run init
+          # ./install-build-deps.sh --no-prompt
+          sudo apt update && sudo apt install gperf pkg-config -y
+        
+
+      - name: build prepare
+        run: |
+          cd brave-browser/src/brave
+          echo "brave_services_key = qjVKcxtUybh8WpKNoQ7EbgbkJTMu7omjDHKk=VrPApb8PwJyPE9eqchxedTsMEWg" > .npmrc
+          echo "brave_variations_server_url = https://variations.brave.com/seed" >> .npmrc
+          echo "brave_stats_updater_url = https://laptop-updates.brave.com" >> .npmrc
+          echo "brave_stats_api_key = fe033168-0ff8-4af6-9a7f-95e2cbfc9f4f" >> .npmrc
+          echo "brave_sync_endpoint = https://sync-v2.brave.com/v2" >> .npmrc
+          echo "updater_dev_endpoint = https://go-updater-dev.bravesoftware.com/extensions" >> .npmrc
+          echo "updater_prod_endpoint = https://go-updater.brave.com/extensions" >> .npmrc
+          echo "rewards_grant_dev_endpoint = https://grant.rewards.brave.com" >> .npmrc
+          echo "rewards_grant_staging_endpoint = https://grant.rewards.brave.com" >> .npmrc
+          echo "rewards_grant_prod_endpoint = https://grant.rewards.brave.com" >> .npmrc
+          echo "uphold_client_id = 6d8d9473ed20be627f71ed46e207f40c004c5b1a" >> .npmrc
+          echo "uphold_client_secret = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> .npmrc
+          echo "uphold_staging_client_id = 4c2b665ca060d912fec5c735c734859a06118cc8" >> .npmrc
+          echo "uphold_staging_client_secret = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> .npmrc
+          echo "gemini_api_url = https://api.gemini.com/v1" >> .npmrc
+          echo "gemini_oauth_url = https://api.gemini.com/v1/oauth" >> .npmrc
+          echo "gemini_wallet_client_id = 6d8d9473ed20be627f71ed46e207f40c004c5b1a" >> .npmrc
+          echo "gemini_wallet_client_secret = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> .npmrc
+          echo "sardine_client_id = 7ca8433c-7e61-4e25-b76e-25aa2da68df1" >> .npmrc
+          echo "sardine_client_secret = 7ca8433c-7e61-4e25-b76e-25aa2da68df1" >> .npmrc
+          echo "brave_zero_ex_api_key = xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx" >> .npmrc
+  
+      - name: modify files
+        run: |
+          sudo find brave-browser -exec touch -acm -t 197001010000.00 {} +
+  
+  
+      - name: restore cache
+        uses: actions/cache/restore@v3
+        with:
+          path: brave-browser/src/out
+          key: 'ninja-cache-stage2'
+  
+      - name: build
+        run: |
+          cd brave-browser/src/brave
           npm run build Release
+
 
 
