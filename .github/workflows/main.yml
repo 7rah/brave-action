@@ -1,5 +1,7 @@
 name: My build action requiring more space
-on: push
+on:
+  workflow_dispatch:
+  push:
 
 jobs:
   build-stage1:
